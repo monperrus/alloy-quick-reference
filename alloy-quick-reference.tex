@@ -1,0 +1,296 @@
+
+\documentclass{article}
+\usepackage[margin=2.4cm,a4paper]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{longtable}
+\usepackage[colorlinks]{hyperref}
+
+\title{Alloy: A Quick Reference}
+\author{Martin Monperrus\\ with contributions of Marc Frappier}
+
+
+
+\newlength\tw
+\setlength{\tw}{7.5cm}
+\begin{document}
+
+\maketitle
+
+\noindent This document presents the syntax and intuitive meaning of the main concepts of the Alloy modeling language. It somehow focuses on the "navigation expression style " of Alloy (see Jakson's "Software Abstractions", p.34) and refers to classical object-oriented knowledge. It is inspired from Mohammad Mousavi's "Z and Alloy Notations: A Quick Reference".
+\medskip
+
+\noindent Contributions are welcome as pull requests on:\\ \url{https://github.com/monperrus/alloy-quick-reference}
+
+\section{Basics}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{sig Book \{ \}} & Class/type definition \\
+\hline
+\texttt{sig Dictionary extends Book \{ ... \}} & Inheritance \\
+\hline
+\texttt{sig Book \{ author: Author \}} & Field, reference, cannot be null \\
+\hline
+\texttt{b.author} & Field access\\
+\hline
+\texttt{pred predicate\_name \{ ... \}} & Predicate (returns true or false), property definition \\
+\hline
+\texttt{pred has\_author[b : Book] \{  \}} & Parametrized property definition \\
+\hline
+\texttt{fact \{ ... \}} & Predicate that always holds, a formula which must be satisfied by all instances of an Alloy model\\
+\hline
+\texttt{run \{ ... \}} & Find instances \\
+\hline
+\texttt{run \{ ... \} for 3 but 1 Author} & Find instances with constraints on # of instances\footnote{except for intergers (Int) where n is the bitwidth}\\
+\hline
+\texttt{pred foo[b:Book] \{ .... \}\newline
+run foo for 3 but 1 Author} & Find instances satisfying predicate "foo" \\
+\hline
+\texttt{assert GaGb \{ good\_author implies  good\_book \}\newline
+check GaGb} & Find counter-examples violating the assertion \\
+\hline
+\texttt{check \{ good\_author implies  good\_book \} } & Anonymous assertions \\
+\hline
+\texttt{fun books(a: Author) : set Book {...}} & Function definition (side-effect free), returns an expression of some type (here \texttt{set Book}) \\
+\hline
+\texttt{let x: E | \ldots} & Identifier definition\\
+\hline
+\end{longtable}
+
+
+\section{First Order Logic}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{p and q, p \&\& q} & Conjunction, logical and \\
+\hline
+\texttt{p or q, p || q} & Disjunction, logical or\\
+\hline
+\texttt{p implies q, p => q} & Implication \\
+\hline
+\texttt{p iff q, p <=> q} & Equivalence \\
+\hline
+\texttt{not p, !p} & Negation \\
+\hline
+\texttt{all b:Book | has\_author[b]} & Universal quantification, for all \\
+\hline
+\texttt{some b:B | has\_author[b]} & Existential quantification, at least one \\
+\hline
+\texttt{some disjoint b1, b2 : B | \ldots} & Existential quantification, forcing removal of case $b1=b2$\\
+\hline
+\end{longtable}
+
+\section{Set Theory}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{Book} & All instances of Book \\
+\hline
+\texttt{sig Dictionary extends Book \{ ... \}} & Set Dictionary is a subset of set Book, all extension signatures (subclasses) are disjoint. \\
+\hline
+\texttt{univ} & All instances of all types (the universe) \\
+\hline
+\texttt{none} & Empty set \{\} \\
+\hline
+\texttt{no x} & Set $x$ is empty\\
+\hline
+\texttt{\#Book} & Cardinality \\
+\hline
+\texttt{a in b} & Subset or equal\\
+\hline
+\texttt{a = b} & Set equality\\
+\hline
+\texttt{some x} & Set not empty, $|x|\geq1$\\
+\hline
+\texttt{one x} & $|x|=1$ \\
+\hline
+\texttt{lone x} & $|x|\leq1$\\
+\hline
+\texttt{x \& y} & Intersection\\
+\hline
+\texttt{x + y } & Union\\
+\hline
+\texttt{x - y} & Difference\\
+\hline
+\end{longtable}
+
+\section{Objects}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{abstract sig Book \{\}} & Abstract class, cannot be instantiated \\
+\hline
+\texttt{one sig Bible extends Book \{...\}} & Singleton, $|Bible| = 1$, Bible subset of Book \\
+\hline
+\texttt{enum Vegetable \{Potato, Carrot, Tomato\}} & Enumeration \\
+\hline
+\texttt{sig Book \{ author: Author \}} & Field, reference, cannot be null \\
+\hline
+\texttt{b.author} & Field access\\
+\hline
+\texttt{b.isGood} & Method call without parameters\newline (with \texttt{pred  isGood[x:Book]}) \\
+\hline
+\texttt{b.isBetterThan[b2]} & Method call with parameters\newline (with \texttt{pred  isGood[x,y: Book]}) \\
+\hline
+\texttt{sig Book \{ author: Author \}} & Multiplicity $[1\ldots1]$ \\
+\hline
+\texttt{sig Book \{ author: set Author \}} & Multiplicity $[0\ldots\star]$ \\
+\hline
+\texttt{sig Book \{ author: lone Author \}} & Multiplicity $[0\ldots\star]$ \\
+\hline
+\texttt{sig Library \{ books: Author -> Book \}} & Dictionary, hashtable, cartesian product\\
+\hline
+\texttt{myLibrary.books[a]} & Dictionary member access\\
+\hline
+\texttt{dom[Library.books]} & Keys of the dictionary (with "open util/relation")\\
+\hline
+\texttt{ran[Library.books]} & Values of the relation (with "open util/relation") \\
+\hline
+\end{longtable}
+
+\section{Relations}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{a->b} & Cartesian product $a \times b$ \\
+\hline
+\texttt{a.b} & Relational product\\
+\hline
+\texttt{a<:b} & Domain restriction of relation b by set a \\
+\hline
+\texttt{a:>b} & Range restriction of relation b by set a \\
+\hline
+\texttt{joe.\^{}friends} & Transitive closure\\
+\hline
+%\texttt{*friends} & Reflexive transitive closure\\
+%\hline
+\texttt{\~{}x} & Inverse \\
+\hline
+\texttt{T-> one U} &  Total function from T to U\\
+\hline
+\texttt{T-> lone U} & Partial function from T to U\\
+\hline
+\texttt{T one -> one U} & Bijection from T to U\\
+\hline
+\end{longtable}
+
+\section{Integer Arithmetic}
+
+When using integer, add \texttt{open util/integer} in preamble and always specify the integer bitwidth (\texttt{run \{\ldots\} for 5 Int}). There is no real or floating-point arithmetic in Alloy.
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{plus[a,b]} & Addition\\
+\hline
+\texttt{minus[a,b]} & Substraction\\
+\hline
+\texttt{mul[a,b]} & Multiplication\\
+\hline
+\texttt{div[a,b]} & Division\\
+\hline
+\texttt{rem[a,b]} & Remainder of a divided by b\\
+\hline
+\texttt{sum[a]} & Returns the sum of the integers of set $a$\\
+\hline
+\texttt{a < b, a = b, a > b, a =< b, a >= b} & Integer comparison\\
+\hline
+\end{longtable}
+
+\section{Ordering}
+
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{open util/ordering[State] as states} & Declares a total order on State\\
+\hline
+\texttt{states/first} & First element\\
+\hline
+\texttt{states/last} & Last element\\
+\hline
+\texttt{states/next[s]} & Next element\\
+\hline
+\texttt{states/prev[s]} & Previous element\\
+\hline
+\texttt{states/nexts[s]} & All elements after s\\
+\hline
+\texttt{states/prev[s]} & All elements before s\\
+\hline
+\end{longtable}
+
+\section{Sequences / Lists}}
+%% see \url{http://alloy.mit.edu/alloy/documentation/quickguide/seq.html}
+\begin{longtable}{|p{\tw}|p{\tw}|}
+\hline
+\emph{Notation} & \emph{Intuitive Meaning} \\
+\hline
+\texttt{s : seq A} & Ordered and indexed sequence of elements\\
+\hline
+\texttt{s.first} & Head of the list\\
+\hline
+\texttt{s.rest} & Tail of the list\\
+\hline
+\texttt{s.elems} & All elements as an unordered set\\
+\hline
+\texttt{s.idxOf [x]} & Returns the first index where x appears in s, if x does not appear in s, it returns the empty set.\\
+\hline
+\texttt{s.insert[i, x]} &  Returns a new list where x is inserted at index i\\
+\hline
+\end{longtable}
+
+\newpage
+\section{Precedence}
+
+In increasing order; operators on the same line have the same priority.
+
+\begin{minipage}{\tw}
+Expressions (operands are not booleans)
+\begin{enumerate}
+\itemsep=0em
+\item \~{} , \^{}  , *
+\item .
+\item ~[]
+\item <: , :>
+\item ->
+\item &
+\item ++
+\item #
+\item +, -
+\item no , some , lone , one , set
+\item ! , not
+\item in , = , < , > , = , =< , =>
+\end{enumerate}
+\end{minipage}
+\begin{minipage}{\tw}
+Logical expressions (operands are booleans) 
+\begin{enumerate}
+\itemsep=0em
+\item ! ,, not
+\item \&\& , and
+\item => , implies , else
+\item <=> , iff
+\item || , or
+\item let , no , some , lone , one 
+\end{enumerate}
+\\~
+\\~
+\\~
+\\~
+\\~
+\\~
+\\~
+\end{minipage}
+
+\end{document}
