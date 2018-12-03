@@ -43,7 +43,7 @@
 \hline
 \texttt{run \{ ... \}} & Find instances \\
 \hline
-\texttt{run \{ ... \} for 3 but 1 Author} & Find instances with constraints on # of instances\footnote{except for intergers (Int) where n is the bitwidth}\\
+\texttt{run \{ ... \} for 3 but 1 Author} & Find instances with constraints on \# of instances\footnote{except for intergers (Int) where n is the bitwidth}\\
 \hline
 \texttt{pred foo[b:Book] \{ .... \}\newline
 run foo for 3 but 1 Author} & Find instances satisfying predicate "foo" \\
@@ -144,7 +144,7 @@ check GaGb} & Find counter-examples violating the assertion \\
 \hline
 \texttt{sig Book \{ author: set Author \}} & Multiplicity $[0\ldots\star]$ \\
 \hline
-\texttt{sig Book \{ author: lone Author \}} & Multiplicity $[0\ldots\star]$ \\
+\texttt{sig Book \{ author: lone Author \}} & Multiplicity $[0\ldots1]$ \\
 \hline
 \texttt{sig Library \{ books: Author -> Book \}} & Dictionary, hashtable, cartesian product\\
 \hline
@@ -230,7 +230,7 @@ When using integer, add \texttt{open util/integer} in preamble and always specif
 \hline
 \end{longtable}
 
-\section{Sequences / Lists}}
+\section{Sequences / Lists}
 %% see \url{http://alloy.mit.edu/alloy/documentation/quickguide/seq.html}
 \begin{longtable}{|p{\tw}|p{\tw}|}
 \hline
@@ -255,42 +255,37 @@ When using integer, add \texttt{open util/integer} in preamble and always specif
 
 In increasing order; operators on the same line have the same priority.
 
-\begin{minipage}{\tw}
+~
+
+\begin{minipage}[t]{\tw}
 Expressions (operands are not booleans)
 \begin{enumerate}
 \itemsep=0em
-\item \~{} , \^{}  , *
-\item .
-\item ~[]
-\item <: , :>
-\item ->
-\item &
-\item ++
-\item #
-\item +, -
-\item no , some , lone , one , set
-\item ! , not
-\item in , = , < , > , = , =< , =>
+\item \verb|~|, \verb|^|, \verb|*|
+\item \verb|.|
+\item \verb|~[]|
+\item \verb|<:| , \verb|:>|
+\item \verb|->|
+\item \verb|&|
+\item \verb|++|
+\item \verb|#|
+\item \verb|+|, \verb|-|
+\item \verb|no|, \verb|some|, \verb|lone|, \verb|one|, \verb|set|
+\item \verb|!|, \verb|not|
+\item \verb|in|, \verb|=|, \verb|<|, \verb|>|, \verb|=|, \verb|=<|, \verb|=>|
 \end{enumerate}
 \end{minipage}
-\begin{minipage}{\tw}
+\begin{minipage}[t]{\tw}
 Logical expressions (operands are booleans) 
 \begin{enumerate}
 \itemsep=0em
-\item ! ,, not
-\item \&\& , and
-\item => , implies , else
-\item <=> , iff
-\item || , or
-\item let , no , some , lone , one 
+\item \verb|!|, \verb|not|
+\item \verb|&&|, \verb|and|
+\item \verb|=>|, \verb|implies else|
+\item \verb|<=>|, \verb|iff|
+\item \verb||||, \verb|or|
+\item \verb|let|, \verb|no|, \verb|some|, \verb|lone|, \verb|one|
 \end{enumerate}
-\\~
-\\~
-\\~
-\\~
-\\~
-\\~
-\\~
 \end{minipage}
 
 \end{document}
